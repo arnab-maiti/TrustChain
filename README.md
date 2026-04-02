@@ -1,1 +1,2 @@
 # TrustChain
+A Decentralized System
