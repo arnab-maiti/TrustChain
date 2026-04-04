@@ -11,6 +11,7 @@ CREATE TABLE users (
   updated_at    TIMESTAMPTZ DEFAULT NOW(),
   deleted_at    TIMESTAMPTZ 
 );
+
 create type product_status as enum('created','in_transit','delivered');
 create table products(
 id            uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -22,4 +23,14 @@ current_owner_id  uuid not null references users(id),
 status         product_status not null default 'created',
 created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TYPE event_type AS ENUM ('created','transferred','delivered','delayed','damaged');
+CREATE TABLE product_events (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  product_id UUID NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+  user_id UUID REFERENCES users(id) ON DELETE SET NULL,
+  event_type event_type NOT NULL,
+  notes TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
