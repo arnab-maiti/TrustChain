@@ -6,29 +6,28 @@ A dynamic trust score based supply chain system.
 
 ## 💡 Idea
 
-TrustChain is designed to bring transparency and reliability into supply chain systems.
-
-Each participant (Manufacturer → Distributor → Retailer) is assigned a **dynamic trust score** based on their actions and behavior.
+TrustChain aims to bring transparency and accountability into supply chains by assigning a **dynamic trust score** to each participant based on their actions.
 
 ---
 
 ## 🎯 Features (Current Progress)
 
-- 👤 Users system (roles: Manufacturer, Distributor, Retailer)
+- 👤 Users system (Manufacturer, Distributor, Retailer)
 - 📦 Product management system
-- 🔄 Product transfer mechanism (stage-to-stage movement)
+- 🔄 Product transfer mechanism
 - ⚡ Event tracking system (core event engine)
-- 📊 Foundation for trust score calculation
+- 📊 Trust history tracking
+- 🔗 Event → impact mapping (foundation for trust scoring)
 
 ---
 
 ## 🧠 How It Works
 
-1. Users are registered with specific roles  
-2. Products are created and assigned to participants  
-3. Products move across the supply chain  
-4. Each action is tracked as an event  
-5. Trust score will be calculated based on these events  
+1. Users join with specific roles  
+2. Products are created and transferred across participants  
+3. Every action is recorded as an event  
+4. Events are mapped to trust impact  
+5. Trust score will be calculated dynamically  
 
 ---
 
@@ -37,35 +36,30 @@ Each participant (Manufacturer → Distributor → Retailer) is assigned a **dyn
 - Node.js  
 - Express.js  
 - PostgreSQL  
-- (Planned) Blockchain integration (Ethereum / Polygon)
+- (Planned) Blockchain integration  
 
 ---
 
-## 📊 Project Status
+## 📊 Project Progress
 
 - ✅ Day 1: Database schema (users, products)
-- ✅ Day 2: Transfer logic + event engine
-- 🔄 Next: Trust score calculation system
-- 🔜 Future: Blockchain verification layer
+- ✅ Day 2: Transfer system + event engine
+- ✅ Day 3: Trust history + event-impact mapping
+- 🔄 Next: Trust score calculation engine
+- 🔜 Future: Blockchain verification layer  
 
 ---
 
 ## 🚀 Future Scope
 
-- Dynamic trust score engine  
-- Blockchain-based verification (tamper-proof records)  
-- Role-based payment logic  
-- Dashboard for tracking trust scores  
+- Dynamic trust score calculation  
+- Blockchain-based verification  
+- Payment logic based on trust  
+- Dashboard for visualization  
 
 ---
 
-## 📌 Author
+## 👨‍💻 Author
 
-**Arnab Maiti**  
-Blockchain Developer (Learning & Building in Public)
-
----
-
-## ⭐ Note
-
-This project is being built in public as a learning and real-world system design journey.
+Arnab Maiti  
+Building in public 🚀
