@@ -24,6 +24,8 @@ status         product_status not null default 'created',
 created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+create index idx_manufacturer_id on products(manufacturer_id);
+create index idx_current_owner_id on products(current_owner_id);
 
 CREATE TYPE event_type AS ENUM ('created','transferred','delivered','delayed','damaged');
 CREATE TABLE product_events (
@@ -34,3 +36,18 @@ CREATE TABLE product_events (
   notes TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+create index idx_product_id on product_events(product_id);
+create index idx_user_id on product_events(user_id);
+create index idx_events_product_created on product_events(product_id,created_at desc);
+create index idx_events_user_created on product_events(user_id,created_at desc);
+
+create table trust_logs(
+id uuid primary key default uuid_generate_v4(),
+user_id uuid references users(id) on delete set null, 
+change_value integer not null check (change_value between -100 and 100),
+reason text not null,
+related_event_id uuid references product_events(id) on delete set null,
+created_at timestamptz not null default now()
+);
+create index idx_users_id on trust_logs(user_id);
+create index idx_events_id on trust_logs(related_event_id);
