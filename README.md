@@ -45,11 +45,18 @@ TrustChain aims to bring transparency and accountability into supply chains by a
 - ✅ Day 1: Database schema (users, products)
 - ✅ Day 2: Transfer system + event engine
 - ✅ Day 3: Trust history + event-impact mapping
-- 🔄 Next: Trust score calculation engine
-- 🔜 Future: Blockchain verification layer  
+- ✅ Day 4: System optimization (UUID, indexing, constraints, audit logs)
+- ✅ Day 5: Backend foundation + PostgreSQL advanced concepts + error handling
 
 ---
+## ⚙️ Backend Architecture
 
+- Controller → Service → Database pattern
+- PostgreSQL with triggers, constraints, indexing
+- Event-driven system design
+- Error handling using asyncHandler + custom AppError
+
+----
 ## 🚀 Future Scope
 
 - Dynamic trust score calculation  
