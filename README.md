@@ -1,72 +1,135 @@
 # 🚀 TrustChain
 
-A dynamic trust score based supply chain system.
+A dynamic trust score based supply chain system designed for real-world scalability, transparency, and reliability.
 
 ---
 
 ## 💡 Idea
 
-TrustChain aims to bring transparency and accountability into supply chains by assigning a **dynamic trust score** to each participant based on their actions.
+TrustChain is built to solve trust issues in supply chains by assigning a **dynamic trust score** to each participant based on their actions and history.
+
+Participants:
+Manufacturer → Distributor → Retailer → Customer
 
 ---
 
-## 🎯 Features (Current Progress)
+## 🧠 Core Concepts
 
-- 👤 Users system (Manufacturer, Distributor, Retailer)
-- 📦 Product management system
-- 🔄 Product transfer mechanism
-- ⚡ Event tracking system (core event engine)
-- 📊 Trust history tracking
-- 🔗 Event → impact mapping (foundation for trust scoring)
+- Event-driven system design  
+- Dynamic trust scoring  
+- Audit trail for every action  
+- Backend-first architecture  
+- Blockchain-ready verification layer  
 
 ---
 
-## 🧠 How It Works
+## ⚙️ Backend Architecture
 
-1. Users join with specific roles  
-2. Products are created and transferred across participants  
-3. Every action is recorded as an event  
-4. Events are mapped to trust impact  
-5. Trust score will be calculated dynamically  
+Clean layered architecture:
+
+Controller → Service → Database  
+
+- Controllers handle request/response  
+- Services handle business logic  
+- Database layer handles data operations  
+
+---
+
+## 🗄️ Database Design
+
+Main tables:
+
+- **users** → system actors  
+- **products** → tracked items  
+- **product_events** → system core (event tracking)  
+- **trust_logs** → trust/reputation history  
+
+### Key Features:
+- UUID-based IDs using pgcrypto  
+- Trigger-based auto `updated_at`  
+- Constraints for data safety  
+- Indexing for performance  
+- Event sequencing with integrity logic  
+
+---
+
+## 🔐 Authentication System
+
+- JWT-based authentication  
+- Secure login system  
+- Middleware for protected routes  
+- Token-based authorization flow  
+
+---
+
+## 🧠 System Flow
+
+1. Users register/login  
+2. Products are created  
+3. Products move across participants  
+4. Each action is recorded as an event  
+5. Events affect trust logs  
+6. Trust score (next phase) will be calculated dynamically  
+
+---
+
+## 🚀 Features (Current)
+
+- 👤 User system with roles  
+- 📦 Product management  
+- 🔄 Product transfer system  
+- ⚡ Event-driven architecture  
+- 📊 Trust history tracking  
+- 🔗 Event → impact mapping  
+- 🔐 Authentication system (JWT)  
+- 🛡️ Protected API routes  
+- ⚙️ Backend architecture (Controller → Service → DB)  
+- 🚨 Error handling (asyncHandler + AppError)  
 
 ---
 
 ## 🛠 Tech Stack
 
-- Node.js  
-- Express.js  
-- PostgreSQL  
-- (Planned) Blockchain integration  
+- **Backend:** Node.js, Express.js  
+- **Database:** PostgreSQL  
+- **Authentication:** JWT  
+- **Tools:** pg, GitHub  
 
 ---
 
 ## 📊 Project Progress
 
-- ✅ Day 1: Database schema (users, products)
-- ✅ Day 2: Transfer system + event engine
-- ✅ Day 3: Trust history + event-impact mapping
-- ✅ Day 4: System optimization (UUID, indexing, constraints, audit logs)
-- ✅ Day 5: Backend foundation + PostgreSQL advanced concepts + error handling
+- ✅ Day 1: Database schema (users, products)  
+- ✅ Day 2: Transfer system + event engine  
+- ✅ Day 3: Trust history + event-impact mapping  
+- ✅ Day 4: System optimization (UUID, indexing, constraints)  
+- ✅ Day 5: Backend foundation + error handling + DB deep concepts  
+- ✅ Day 6: Authentication system (JWT, middleware, protected routes)  
 
 ---
-## ⚙️ Backend Architecture
 
-- Controller → Service → Database pattern
-- PostgreSQL with triggers, constraints, indexing
-- Event-driven system design
-- Error handling using asyncHandler + custom AppError
+## 🔄 Upcoming
 
-----
-## 🚀 Future Scope
-
-- Dynamic trust score calculation  
-- Blockchain-based verification  
-- Payment logic based on trust  
+- Trust score calculation engine  
+- Blockchain verification layer  
+- Payment logic based on trust score  
 - Dashboard for visualization  
+
+---
+
+## 🌍 Vision
+
+To build a scalable, transparent, and trust-driven supply chain system that can handle real-world usage and integrate with blockchain for verification.
 
 ---
 
 ## 👨‍💻 Author
 
 Arnab Maiti  
-Building in public 🚀
+Backend Developer | Building in Public 🚀  
+
+---
+
+## ⭐ Note
+
+This project is being built step-by-step as a real-world system design journey, focusing on scalability, reliability, and production-level backend engineering.
