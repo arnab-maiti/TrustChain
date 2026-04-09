@@ -6,7 +6,7 @@ A dynamic trust score based supply chain system designed for real-world scalabil
 
 ## 💡 Idea
 
-TrustChain is built to solve trust issues in supply chains by assigning a **dynamic trust score** to each participant based on their actions and history.
+TrustChain aims to solve trust issues in supply chains by assigning a **dynamic trust score** to each participant based on their actions and history.
 
 Participants:
 Manufacturer → Distributor → Retailer → Customer
@@ -17,6 +17,7 @@ Manufacturer → Distributor → Retailer → Customer
 
 - Event-driven system design  
 - Dynamic trust scoring  
+- Role-based access control (RBAC)  
 - Audit trail for every action  
 - Backend-first architecture  
 - Blockchain-ready verification layer  
@@ -31,7 +32,7 @@ Controller → Service → Database
 
 - Controllers handle request/response  
 - Services handle business logic  
-- Database layer handles data operations  
+- Database handles data operations  
 
 ---
 
@@ -42,7 +43,7 @@ Main tables:
 - **users** → system actors  
 - **products** → tracked items  
 - **product_events** → system core (event tracking)  
-- **trust_logs** → trust/reputation history  
+- **trust_logs** → reputation history  
 
 ### Key Features:
 - UUID-based IDs using pgcrypto  
@@ -53,12 +54,12 @@ Main tables:
 
 ---
 
-## 🔐 Authentication System
+## 🔐 Authentication & Security
 
 - JWT-based authentication  
-- Secure login system  
-- Middleware for protected routes  
-- Token-based authorization flow  
+- Role-based access control (RBAC)  
+- Protected routes using middleware  
+- Secure business logic enforcement  
 
 ---
 
@@ -69,7 +70,7 @@ Main tables:
 3. Products move across participants  
 4. Each action is recorded as an event  
 5. Events affect trust logs  
-6. Trust score (next phase) will be calculated dynamically  
+6. Trust score (upcoming) will be calculated dynamically  
 
 ---
 
@@ -82,7 +83,8 @@ Main tables:
 - 📊 Trust history tracking  
 - 🔗 Event → impact mapping  
 - 🔐 Authentication system (JWT)  
-- 🛡️ Protected API routes  
+- 🛡️ Role-based access control (RBAC)  
+- 🔒 Protected API routes  
 - ⚙️ Backend architecture (Controller → Service → DB)  
 - 🚨 Error handling (asyncHandler + AppError)  
 
@@ -103,8 +105,8 @@ Main tables:
 - ✅ Day 2: Transfer system + event engine  
 - ✅ Day 3: Trust history + event-impact mapping  
 - ✅ Day 4: System optimization (UUID, indexing, constraints)  
-- ✅ Day 5: Backend foundation + error handling + DB deep concepts  
-- ✅ Day 6: Authentication system (JWT, middleware, protected routes)  
+- ✅ Day 5: Backend foundation + error handling + DB concepts  
+- ✅ Day 6: Authentication + RBAC + secure business logic  
 
 ---
 
@@ -132,4 +134,4 @@ Backend Developer | Building in Public 🚀
 
 ## ⭐ Note
 
-This project is being built step-by-step as a real-world system design journey, focusing on scalability, reliability, and production-level backend engineering.
+This project is being built step-by-step as a real-world backend system, focusing on scalability, security, and production-level architecture.
