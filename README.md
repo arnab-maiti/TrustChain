@@ -9,7 +9,7 @@ A dynamic trust score based supply chain system designed for real-world scalabil
 TrustChain aims to solve trust issues in supply chains by assigning a **dynamic trust score** to each participant based on their actions and history.
 
 Participants:
-Manufacturer → Distributor → Retailer → Customer
+Manufacturer → Distributor → Courier → Retailer → Customer
 
 ---
 
@@ -63,6 +63,34 @@ Main tables:
 
 ---
 
+## 📦 Product Flow (Core Logic)
+
+### Workflow:
+created → accepted → out_for_delivery → delivered (in progress)
+
+### Roles:
+
+- Manufacturer → create product  
+- Distributor → accept shipment  
+- Courier → handle delivery  
+
+### Features:
+- Role-based validation at each step  
+- Shipment acceptance API  
+- Courier assignment  
+- Event logging for every action  
+
+---
+
+## 🛡️ Business Logic Enforcement
+
+- Strict RBAC rules  
+- Invalid actions blocked (403 errors)  
+- Data consistency ensured with constraints and validation  
+- Real-world logistics flow simulation  
+
+---
+
 ## 🧠 System Flow
 
 1. Users register/login  
@@ -79,6 +107,8 @@ Main tables:
 - 👤 User system with roles  
 - 📦 Product management  
 - 🔄 Product transfer system  
+- 📦 Shipment acceptance system  
+- 🚚 Delivery workflow (in progress)  
 - ⚡ Event-driven architecture  
 - 📊 Trust history tracking  
 - 🔗 Event → impact mapping  
@@ -107,11 +137,22 @@ Main tables:
 - ✅ Day 4: System optimization (UUID, indexing, constraints)  
 - ✅ Day 5: Backend foundation + error handling + DB concepts  
 - ✅ Day 6: Authentication + RBAC + secure business logic  
+- ✅ Day 7: Product flow + shipment APIs + debugging + system behavior  
+
+---
+
+## 🧠 Key Learning
+
+- Backend = logic + rules + flow (not just APIs)  
+- Real systems require strict validation and role enforcement  
+- Debugging is a core engineering skill  
+- Event-driven design improves traceability and scalability  
 
 ---
 
 ## 🔄 Upcoming
 
+- Complete delivery flow (out_for_delivery → delivered)  
 - Trust score calculation engine  
 - Blockchain verification layer  
 - Payment logic based on trust score  
