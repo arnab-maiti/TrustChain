@@ -113,3 +113,14 @@ CREATE INDEX idx_tlogs_event     ON trust_logs(related_event_id);
 CREATE INDEX idx_tlogs_user_time ON trust_logs(user_id, created_at DESC);
 CREATE INDEX idx_tlogs_negative  ON trust_logs(user_id)
   WHERE change_value < 0;
+CREATE TABLE delivery_otp (
+  id          UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+  shipment_id  UUID        NOT NULL,
+  otp_code     TEXT        NOT NULL,
+  expires_at   TIMESTAMPTZ NOT NULL,
+  is_used      BOOLEAN     NOT NULL DEFAULT FALSE,
+  created_at   TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+ALTER TYPE product_status ADD VALUE IF NOT EXISTS 'accepted';
+ALTER TYPE product_status ADD VALUE IF NOT EXISTS 'out-of-delivery';
+ALTER TABLE products ADD COLUMN IF NOT EXISTS courier_id UUID REFERENCES users(id);

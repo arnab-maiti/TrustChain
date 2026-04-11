@@ -1,5 +1,9 @@
 const { Pool } = require("pg");
-require("dotenv").config();
+try {
+  require("dotenv").config();
+} catch (error) {
+  // The environment may already be injected by the runtime.
+}
 const pool = new Pool({
   user: "postgres",
   host: "localhost",
