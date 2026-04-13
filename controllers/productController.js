@@ -51,12 +51,7 @@ const markOutOfDelivery=asyncHandler(async(req,res,next)=>{
   throw new AppError("Not your shipment", 403);
 }
 const updatedProduct = await pool.query(
-    `UPDATE products 
-     SET status = 'out-of-delivery'
-     WHERE id = $1
-     RETURNING *`,
-    [id]
-  );
+    `UPDATE products SET status = 'out-of-delivery' WHERE id = $1 RETURNING *`,[id]);
    res.status(200).json({
     success: true,
     data: updatedProduct.rows[0],
