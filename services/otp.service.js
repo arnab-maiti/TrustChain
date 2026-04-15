@@ -13,7 +13,7 @@ const generateOTP = async (productId) => {
   if (product.status !== "out-of-delivery") {
     throw new AppError("Product is not available for delivery", 400);
   }
-  await pool.query("DELETE FROM delivery_otps WHERE product_id = $1", [
+  await pool.query("DELETE FROM delivery_otp WHERE shipment_id = $1", [
     productId,
   ]);
 
@@ -21,15 +21,24 @@ const generateOTP = async (productId) => {
   const expiresAt = new Date(Date.now() + 2 * 60 * 1000);
 
   await pool.query(
-    "INSERT INTO delivery_otps (product_id, otp, expires_at) VALUES ($1, $2, $3)",
+    "INSERT INTO delivery_otp (shipment_id, otp_code, expires_at) VALUES ($1, $2, $3)",
     [productId, otp, expiresAt]
   );
   return otp;
 };
 
 const verifyOTP = async (productId, otp) => {
+  const productResult = await pool.query(
+    "SELECT id, status, courier_id FROM products WHERE id = $1",
+    [productId]
+  );
+  const product = productResult.rows[0];
+  if (!product) {
+    throw new AppError("Product not found", 404);
+  }
+
   const result = await pool.query(
-    "SELECT * FROM delivery_otps WHERE product_id = $1",
+    "SELECT * FROM delivery_otp WHERE shipment_id = $1 ORDER BY created_at DESC LIMIT 1",
     [productId]
   );
   const otpRecord = result.rows[0];
@@ -39,22 +48,39 @@ const verifyOTP = async (productId, otp) => {
   if (otpRecord.expires_at < new Date()) {
     throw new AppError("OTP has expired", 400);
   }
-  if (otpRecord.verified === true) {
+  if (otpRecord.is_used === true) {
     throw new AppError("OTP has already been used", 400); }
-  if (otpRecord.attempt_count >= 5) {
-    throw new AppError("Maximum OTP attempts exceeded", 400); }
-  if (otpRecord.otp !== otp) {
-    const attemptCount = (otpRecord.attempt_count || 0) + 1;
-    await pool.query(
-      "UPDATE delivery_otps SET attempt_count = $1 WHERE product_id = $2",
-      [attemptCount, productId]
-    );
+  if (otpRecord.otp_code !== otp) {
     throw new AppError("Invalid OTP", 400);
   }
   await pool.query(
-    "UPDATE delivery_otps SET verified = true WHERE product_id = $1",
+    "UPDATE delivery_otp SET is_used = true WHERE id = $1",
+    [otpRecord.id]
+  );
+  await pool.query(
+    "UPDATE products SET status = 'delivered' WHERE id = $1",
     [productId]
   );
+
+  if (product.courier_id) {
+    const trustUpdateResult = await pool.query(
+      "UPDATE users SET trust_score = LEAST(100, trust_score + 10) WHERE id = $1 RETURNING trust_score",
+      [product.courier_id]
+    );
+
+    if (trustUpdateResult.rows[0]) {
+      await pool.query(
+        "INSERT INTO trust_logs (user_id, change_value, score_after, reason) VALUES ($1, $2, $3, $4)",
+        [
+          product.courier_id,
+          10,
+          trustUpdateResult.rows[0].trust_score,
+          "Successful delivery",
+        ]
+      );
+    }
+  }
+
   return "delivery confirmed";
 };
 
