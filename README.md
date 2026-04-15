@@ -130,3 +130,25 @@ Build a scalable, transparent supply chain system with real-world trust and bloc
 
 Arnab Maiti  
 Backend Developer 🚀
+- ✅ Day 9: Trust log integration with delivery verification (core trust system)
+
+---
+
+## 🧠 Trust Score Integration (Core USP)
+
+- Trust logs now updated on successful delivery  
+- OTP verification → delivery confirmed → trust score impact  
+
+### Example:
+- Successful delivery → +10 trust points  
+
+This connects:
+real-world action → system event → trust reputation  
+
+---
+
+## 🔗 Event → Trust Mapping
+
+- Each verified action affects user trust  
+- Trust logs maintain history of score changes  
+- Foundation for dynamic trust score engine  
