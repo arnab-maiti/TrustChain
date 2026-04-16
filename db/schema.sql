@@ -113,13 +113,20 @@ CREATE INDEX idx_tlogs_event     ON trust_logs(related_event_id);
 CREATE INDEX idx_tlogs_user_time ON trust_logs(user_id, created_at DESC);
 CREATE INDEX idx_tlogs_negative  ON trust_logs(user_id)
   WHERE change_value < 0;
-CREATE TABLE delivery_otp (
-  id          UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
-  shipment_id  UUID        NOT NULL,
-  otp_code     TEXT        NOT NULL,
-  expires_at   TIMESTAMPTZ NOT NULL,
-  is_used      BOOLEAN     NOT NULL DEFAULT FALSE,
-  created_at   TIMESTAMPTZ NOT NULL DEFAULT NOW()
+CREATE TABLE delivery_otps (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+
+  product_id UUID REFERENCES products(id) ON DELETE CASCADE,
+
+  otp VARCHAR(6) NOT NULL,
+
+  expires_at TIMESTAMP NOT NULL,
+
+  verified BOOLEAN DEFAULT FALSE,
+
+  attempt_count INTEGER DEFAULT 0,
+
+  created_at TIMESTAMP DEFAULT NOW()
 );
 ALTER TYPE product_status ADD VALUE IF NOT EXISTS 'accepted';
 ALTER TYPE product_status ADD VALUE IF NOT EXISTS 'out-of-delivery';
