@@ -1,6 +1,6 @@
 const pool = require("../config/db");
 const AppError = require("../src/utils/AppError");
-
+const { logEvent } = require("./event.service");
 const generateOTP = async (productId) => {
   const client = await pool.connect();
 
@@ -30,7 +30,11 @@ const generateOTP = async (productId) => {
       "INSERT INTO delivery_otps (product_id, otp, expires_at) VALUES ($1, $2, $3)",
       [productId, otp, expiresAt]
     );
-
+     await logEvent(
+      productId,
+      "OTP_GENERATED",
+      "OTP generated for delivery confirmation",
+     ); 
     await client.query("COMMIT");
     return otp;
   } catch (error) {
@@ -103,7 +107,8 @@ const verifyOTP = async (productId, otp) => {
         );
       }
     }
-
+    
+    await logEvent(productId, "DELIVERY_COMPLETED", "Product delivered");
     await client.query("COMMIT");
     return "delivery confirmed";
   } catch (error) {
