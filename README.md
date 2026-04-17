@@ -1,6 +1,6 @@
 # 🚀 TrustChain
 
-A dynamic trust-aware supply chain system where decisions are made based on verified user behavior, not assumptions.
+A trust-aware supply chain system where decisions are made based on verified user behavior, not assumptions.
 
 ---
 
@@ -17,9 +17,9 @@ Manufacturer → Distributor → Courier → Retailer → Customer
 
 > “Don’t trust users. Trust their actions.”
 
-- Trust is **earned through system-verified events**  
-- No manual ratings or fake reviews  
-- Every action leaves an audit trail  
+- Trust is derived from **system-verified events**  
+- No fake ratings or manual reviews  
+- Every action is recorded and auditable  
 
 ---
 
@@ -31,7 +31,7 @@ Controller → Service → Database
 
 - Controllers → handle HTTP requests  
 - Services → business logic  
-- Database → PostgreSQL (data layer)  
+- Database → PostgreSQL  
 
 ---
 
@@ -39,11 +39,11 @@ Controller → Service → Database
 
 ### Tables:
 
-- **users** → system actors  
-- **products** → tracked items  
-- **product_events** → system core (event tracking)  
-- **trust_logs** → trust history  
-- **delivery_otps** → delivery verification  
+- users → system actors  
+- products → tracked items  
+- product_events → system core  
+- trust_logs → trust history  
+- delivery_otps → delivery verification  
 
 ### Features:
 
@@ -51,7 +51,7 @@ Controller → Service → Database
 - Trigger-based `updated_at`  
 - Constraints for data integrity  
 - Indexing for performance  
-- Event sequencing logic  
+- Event sequencing for consistency  
 
 ---
 
@@ -61,11 +61,11 @@ Controller → Service → Database
 - Role-Based Access Control (RBAC)  
 - Protected routes  
 - OTP-based delivery verification  
-- Attempt limits + expiry handling  
+- Attempt limits + expiry logic  
 
 ---
 
-## 📦 Product Lifecycle (Core Flow)
+## 📦 Product Lifecycle
 
 created → accepted → out_for_delivery → delivered  
 
@@ -73,7 +73,7 @@ created → accepted → out_for_delivery → delivered
 
 - Manufacturer → create product  
 - Distributor → accept shipment  
-- Courier → handle delivery  
+- Courier → deliver  
 
 ---
 
@@ -83,11 +83,11 @@ created → accepted → out_for_delivery → delivered
 - Expiry: 2 minutes  
 - Attempt count tracking  
 - Prevent OTP reuse  
-- Required to mark delivery as completed  
+- Required for delivery completion  
 
 ---
 
-## 🧠 Trust Engine (CORE USP 💥)
+## 🧠 Trust Engine (CORE)
 
 TrustChain uses **behavior-based trust scoring**.
 
@@ -95,12 +95,11 @@ TrustChain uses **behavior-based trust scoring**.
 trust_score = SUM(change_value)
 
 ### Current Mapping:
-
 - Successful delivery → +10 trust  
 
 ---
 
-## 🔗 Event → Trust → Decision
+## 🔗 Event → Trust → Decision System
 
 System pipeline:
 
@@ -112,7 +111,7 @@ Event → Trust Update → Decision
 - Low trust courier → ❌ blocked  
 - High trust courier → ✅ allowed  
 
-👉 The system actively uses trust to make decisions.
+👉 System actively uses trust to control actions.
 
 ---
 
@@ -128,74 +127,88 @@ GET /users/:id/trust-score
 ## 🛡️ Fairness Logic
 
 - Trust updated only on verified actions  
-- No penalty for external/user errors (e.g., wrong OTP by customer)  
-- Prevents unfair trust manipulation  
+- No penalty for external/user errors  
+- Prevents unfair trust degradation  
+
+---
+
+## 🧠 Event System & Consistency (Day 11)
+
+- Strict lifecycle tracking enforced  
+- Every product state change must match event logs  
+- Event system acts as single source of truth  
+- Database consistency ensured with constraints + validation  
+
+👉 System designed as an **auditable backend**
 
 ---
 
 ## 🚀 Features
 
-- 👤 User system with roles  
-- 📦 Product lifecycle management  
-- 🔄 Shipment flow system  
-- 🔐 OTP delivery verification  
-- ⚡ Event-driven architecture  
-- 📊 Trust history tracking  
-- 🧠 Trust score engine  
-- 🛡️ Trust-based access control  
-- 🔒 Authentication + RBAC  
-- ⚙️ Clean backend architecture  
-- 🚨 Production-level error handling  
+- User system with roles  
+- Product lifecycle management  
+- Shipment flow system  
+- OTP delivery verification  
+- Event-driven architecture  
+- Trust history tracking  
+- Trust score engine  
+- Trust-based access control  
+- Authentication + RBAC  
+- Clean backend architecture  
+- Production-level error handling  
+- System consistency & auditability  
 
 ---
 
 ## 🛠 Tech Stack
 
-- **Backend:** Node.js, Express.js  
-- **Database:** PostgreSQL  
-- **Authentication:** JWT  
-- **Tools:** pg, GitHub  
+- Backend: Node.js, Express.js  
+- Database: PostgreSQL  
+- Authentication: JWT  
+- Tools: pg, GitHub  
 
 ---
 
 ## 📊 Progress Timeline
 
-- ✅ Day 1: Database schema (users, products)  
-- ✅ Day 2: Transfer system + event engine  
-- ✅ Day 3: Trust history + mapping  
-- ✅ Day 4: Optimization (UUID, indexing, constraints)  
-- ✅ Day 5: Backend foundation + error handling  
-- ✅ Day 6: Authentication + RBAC  
-- ✅ Day 7: Product flow + shipment APIs  
-- ✅ Day 8: OTP delivery verification + full flow  
-- ✅ Day 9: Trust log integration  
-- ✅ Day 10: Trust score engine + decision system  
+- Day 1: Database schema  
+- Day 2: Event system  
+- Day 3: Trust logs  
+- Day 4: Optimization  
+- Day 5: Backend foundation  
+- Day 6: Auth + RBAC  
+- Day 7: Product flow  
+- Day 8: OTP verification  
+- Day 9: Trust integration  
+- Day 10: Trust engine  
+- Day 11: System consistency & lifecycle tracking  
 
 ---
 
 ## 🧠 Key Learnings
 
 - Backend = logic + rules + flow  
-- Systems should enforce real-world behavior  
-- Trust should be data-driven, not opinion-based  
-- Debugging is core to engineering  
-- Decision-making systems require fairness logic  
+- Systems must enforce real-world constraints  
+- Trust should be data-driven  
+- Debugging is critical  
+- Consistency is more important than features  
+- Event systems must be reliable  
 
 ---
 
 ## 🔄 Upcoming
 
-- Multi-factor trust scoring (delay, disputes, failures)  
-- Blockchain-based trust verification  
-- Payment system based on trust score  
+- Multi-factor trust scoring (delays, disputes, failures)  
+- Blockchain-based verification layer  
+- Payment system based on trust  
 - Real-time dashboard  
-- Scaling for 1M+ users (Redis, queues, caching)  
+- Scalability (Redis, queues, caching)  
 
 ---
 
 ## 🌍 Vision
 
-To build a scalable, transparent, and trust-driven logistics system that can operate in real-world environments and integrate with blockchain for verifiable trust.
+To build a scalable, transparent, and trust-driven logistics system that can integrate with blockchain for verifiable trust.
 
 ---
 
@@ -208,4 +221,4 @@ Backend Developer | Building in Public 🚀
 
 ## ⭐ Note
 
-This project is being built step-by-step as a real-world system focusing on scalability, security, and intelligent decision-making.
+This project is being built step-by-step as a real-world backend system focusing on scalability, security, and intelligent decision-making.
