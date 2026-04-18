@@ -1,67 +1,64 @@
 # 🚀 TrustChain
 
-A trust-aware supply chain system where decisions are made based on verified user behavior, not assumptions.
+A trust-aware supply chain backend where decisions are driven by verified user actions, not assumptions.
 
 ---
 
-## 💡 Idea
+## 💡 Overview
 
-TrustChain solves trust issues in logistics and supply chains by assigning a **dynamic trust score** to participants based on their verified actions.
+TrustChain addresses trust issues in logistics by assigning a **dynamic trust score** to participants based on system-verified events.
 
 Participants:
 Manufacturer → Distributor → Courier → Retailer → Customer
 
 ---
 
-## 🧠 Core Philosophy
+## 🧠 Core Principles
 
-> “Don’t trust users. Trust their actions.”
-
-- Trust is derived from **system-verified events**  
-- No fake ratings or manual reviews  
-- Every action is recorded and auditable  
+- Event-driven architecture  
+- Behavior-based trust scoring  
+- Role-based access control (RBAC)  
+- OTP-based delivery verification  
+- Auditability and consistency  
+- Backend-first, blockchain-ready design  
 
 ---
 
-## ⚙️ Backend Architecture
-
-Clean layered architecture:
+## ⚙️ Architecture
 
 Controller → Service → Database  
 
-- Controllers → handle HTTP requests  
-- Services → business logic  
-- Database → PostgreSQL  
+- Controllers: handle HTTP requests  
+- Services: business logic  
+- Database: PostgreSQL  
 
 ---
 
-## 🗄️ Database Design
+## 🗄️ Database Schema
 
-### Tables:
+### Tables
 
 - users → system actors  
 - products → tracked items  
-- product_events → system core  
-- trust_logs → trust history  
-- delivery_otps → delivery verification  
+- product_events → event history (source of truth)  
+- trust_logs → trust score changes  
+- delivery_otps → OTP verification  
 
-### Features:
+### Features
 
-- UUID-based IDs (pgcrypto)  
-- Trigger-based `updated_at`  
-- Constraints for data integrity  
+- UUID IDs using pgcrypto  
+- Trigger-based updated_at  
+- Constraints for integrity  
 - Indexing for performance  
-- Event sequencing for consistency  
+- Event sequencing  
 
 ---
 
-## 🔐 Authentication & Security
+## 🔐 Authentication & Authorization
 
-- JWT-based authentication  
+- JWT authentication  
 - Role-Based Access Control (RBAC)  
-- Protected routes  
-- OTP-based delivery verification  
-- Attempt limits + expiry logic  
+- Protected routes via middleware  
 
 ---
 
@@ -69,7 +66,7 @@ Controller → Service → Database
 
 created → accepted → out_for_delivery → delivered  
 
-### Role Responsibilities:
+### Role Flow
 
 - Manufacturer → create product  
 - Distributor → accept shipment  
@@ -77,69 +74,65 @@ created → accepted → out_for_delivery → delivered
 
 ---
 
-## 🔐 OTP-Based Delivery Verification
+## 🔐 OTP Verification System
 
-- 1 active OTP per product  
+- One active OTP per product  
 - Expiry: 2 minutes  
-- Attempt count tracking  
+- Attempt limit tracking  
 - Prevent OTP reuse  
 - Required for delivery completion  
 
 ---
 
-## 🧠 Trust Engine (CORE)
+## 🧠 Trust Engine
 
-TrustChain uses **behavior-based trust scoring**.
+Trust is calculated from verified events.
 
-### Formula:
+### Formula
+
 trust_score = SUM(change_value)
 
-### Current Mapping:
-- Successful delivery → +10 trust  
+### Current Rule
+
+- Successful delivery → +10  
 
 ---
 
-## 🔗 Event → Trust → Decision System
+## 🔗 Event → Trust → Decision
 
-System pipeline:
+- OTP verified → delivery success → trust +10  
+- Low trust courier → blocked  
+- High trust courier → allowed  
 
-Event → Trust Update → Decision  
-
-### Example:
-
-- OTP verified → delivery success → +10 trust  
-- Low trust courier → ❌ blocked  
-- High trust courier → ✅ allowed  
-
-👉 System actively uses trust to control actions.
+👉 System behavior depends on trust.
 
 ---
 
-## ⚙️ Trust API
+## ⚙️ API
+
+### Get Trust Score
 
 GET /users/:id/trust-score  
 
-- Returns dynamic trust score  
-- Handles edge case (no logs → 0)  
+- Returns calculated trust score  
+- Returns 0 if no logs exist  
 
 ---
 
-## 🛡️ Fairness Logic
+## 🛡️ Fairness Rules
 
 - Trust updated only on verified actions  
-- No penalty for external/user errors  
-- Prevents unfair trust degradation  
+- No penalties for external errors (e.g., wrong OTP)  
 
 ---
 
-## 🧠 Event System & Consistency (Day 11)
+## 🧠 Event System & Consistency
 
-- Strict lifecycle tracking enforced  
-- Every product state change must match event logs  
-- Event system acts as single source of truth  
-- Database consistency ensured with constraints + validation  
+- Product state must match event logs  
+- Event history acts as source of truth  
+- DB constraints enforce consistency  
 
-👉 System designed as an **auditable backend**
+👉 Designed as an auditable backend system
 
 ---
 
@@ -147,16 +140,14 @@ GET /users/:id/trust-score
 
 - User system with roles  
 - Product lifecycle management  
-- Shipment flow system  
-- OTP delivery verification  
+- Shipment flow  
+- OTP-based delivery verification  
 - Event-driven architecture  
-- Trust history tracking  
 - Trust score engine  
 - Trust-based access control  
 - Authentication + RBAC  
-- Clean backend architecture  
-- Production-level error handling  
-- System consistency & auditability  
+- Error handling system  
+- Data consistency enforcement  
 
 ---
 
@@ -164,61 +155,38 @@ GET /users/:id/trust-score
 
 - Backend: Node.js, Express.js  
 - Database: PostgreSQL  
-- Authentication: JWT  
+- Auth: JWT  
 - Tools: pg, GitHub  
 
 ---
 
-## 📊 Progress Timeline
+## 📊 Progress
 
-- Day 1: Database schema  
-- Day 2: Event system  
-- Day 3: Trust logs  
-- Day 4: Optimization  
-- Day 5: Backend foundation  
-- Day 6: Auth + RBAC  
-- Day 7: Product flow  
-- Day 8: OTP verification  
-- Day 9: Trust integration  
-- Day 10: Trust engine  
-- Day 11: System consistency & lifecycle tracking  
+- Day 1–4: DB + event system + optimization  
+- Day 5–6: Backend + auth + RBAC  
+- Day 7–8: Product flow + OTP  
+- Day 9–10: Trust engine + decision system  
+- Day 11: System consistency + lifecycle alignment  
 
 ---
 
-## 🧠 Key Learnings
+## 🔄 Next Steps
 
-- Backend = logic + rules + flow  
-- Systems must enforce real-world constraints  
-- Trust should be data-driven  
-- Debugging is critical  
-- Consistency is more important than features  
-- Event systems must be reliable  
-
----
-
-## 🔄 Upcoming
-
-- Multi-factor trust scoring (delays, disputes, failures)  
-- Blockchain-based verification layer  
-- Payment system based on trust  
-- Real-time dashboard  
-- Scalability (Redis, queues, caching)  
+- Multi-factor trust scoring  
+- Blockchain verification layer  
+- Payment logic  
+- Dashboard  
+- Scalability improvements  
 
 ---
 
 ## 🌍 Vision
 
-To build a scalable, transparent, and trust-driven logistics system that can integrate with blockchain for verifiable trust.
+To build a scalable, auditable, and trust-driven supply chain system with blockchain-based verification.
 
 ---
 
 ## 👨‍💻 Author
 
 Arnab Maiti  
-Backend Developer | Building in Public 🚀  
-
----
-
-## ⭐ Note
-
-This project is being built step-by-step as a real-world backend system focusing on scalability, security, and intelligent decision-making.
+Backend Developer
