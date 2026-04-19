@@ -1,5 +1,6 @@
 const pool = require("../config/db");
 const AppError = require("../src/utils/AppError");
+const { createDeliveryHash } = require("./blockchain.service");
 const { logEvent } = require("./event.service");
 const generateOTP = async (productId) => {
   const client = await pool.connect();
@@ -118,7 +119,8 @@ const verifyOTP = async (productId, otp) => {
     client.release();
   }
 };
-
+const hash = createDeliveryHash("product123", "courier456", "delivered", Date.now());
+console.log("Generated delivery hash:", hash);
 module.exports = {
   generateOTP,
   verifyOTP,
