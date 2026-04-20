@@ -4,7 +4,7 @@
   "description": "A dynamic trust score based supply chain system.",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "hardhat test",
     "start": "node app.js",
     "dev": "nodemon app.js"
   },
@@ -30,6 +30,9 @@
     "pg": "^8.20.0"
   },
   "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^6.1.2",
+    "dotenv": "^16.6.1",
+    "hardhat": "^2.26.3",
     "nodemon": "^3.1.14"
   }
 }

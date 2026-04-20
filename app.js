@@ -1,3 +1,9 @@
+try {
+  require("dotenv").config();
+} catch (error) {
+  // The environment may already be injected by the runtime.
+}
+
 const express = require('express');
 const errorMiddleware = require("./src/middleware/errorMiddleware");
 const authRoutes = require("./routes/authRoutes");
