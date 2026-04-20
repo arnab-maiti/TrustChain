@@ -119,34 +119,46 @@ GET /users/:id/trust-score
 
 ---
 
-## 🛡️ Fairness Rules
+### 📡 On-Chain Storage
 
-- Trust updated only on verified actions  
-- No penalties for external errors (e.g., wrong OTP)  
+- Smart contract: `storeHash(bytes32 hash)`  
+- Stores delivery proof  
+- Generates transaction hash  
+
+👉 Ensures immutability and tamper detection  
 
 ---
 
-## 🧠 Event System & Consistency
+## 📡 Smart Contract Events
 
-- Product state must match event logs  
-- Event history acts as source of truth  
-- DB constraints enforce consistency  
+- `event DeliveryStored(...)`  
+- Indexed for efficient querying  
+- Acts as public verification log  
 
-👉 Designed as an auditable backend system
+---
+
+## 🔗 Data Strategy
+
+- **PostgreSQL** → full system data  
+- **Blockchain** → proof (hash)  
+
+👉 Efficient, scalable, and secure  
 
 ---
 
 ## 🚀 Features
 
-- User system with roles  
-- Product lifecycle management  
-- Shipment flow  
+- User role system  
+- Product lifecycle tracking  
+- Shipment flow management  
 - OTP-based delivery verification  
 - Event-driven architecture  
 - Trust score engine  
 - Trust-based access control  
+- Blockchain-based verification  
 - Authentication + RBAC  
-- Error handling system  
+- Clean architecture (Controller → Service → DB)  
+- Production-level error handling  
 - Data consistency enforcement  
 
 ---
@@ -155,38 +167,52 @@ GET /users/:id/trust-score
 
 - Backend: Node.js, Express.js  
 - Database: PostgreSQL  
-- Auth: JWT  
-- Tools: pg, GitHub  
+- Blockchain: Solidity, Ethers.js  
+- Authentication: JWT  
+- Tools: GitHub  
 
 ---
 
-## 📊 Progress
+## 📊 Development Timeline
 
-- Day 1–4: DB + event system + optimization  
-- Day 5–6: Backend + auth + RBAC  
-- Day 7–8: Product flow + OTP  
-- Day 9–10: Trust engine + decision system  
-- Day 11: System consistency + lifecycle alignment  
+- Day 1–4 → Database + event system + optimization  
+- Day 5–6 → Backend + auth + RBAC  
+- Day 7–8 → Product flow + OTP verification  
+- Day 9–10 → Trust engine + decision system  
+- Day 11 → Consistency + lifecycle alignment  
+- Day 12 → Blockchain integration + on-chain verification  
 
 ---
 
-## 🔄 Next Steps
+## 🧠 Key Learnings
 
-- Multi-factor trust scoring  
-- Blockchain verification layer  
-- Payment logic  
-- Dashboard  
-- Scalability improvements  
+- Backend = logic + rules + flow  
+- Event systems must be reliable  
+- Trust should be behavior-based  
+- Blockchain is best for verification  
+- Consistency > features  
+- Debugging is core engineering  
+
+---
+
+## 🔄 Future Improvements
+
+- Multi-factor trust scoring (delay, disputes, fraud)  
+- Blockchain-based trust score verification  
+- Payment system based on trust  
+- Real-time dashboard  
+- Redis caching & queues  
+- Microservices architecture  
 
 ---
 
 ## 🌍 Vision
 
-To build a scalable, auditable, and trust-driven supply chain system with blockchain-based verification.
+To build a scalable, transparent, and trust-driven logistics system where every action is verifiable and every decision is data-driven.
 
 ---
 
 ## 👨‍💻 Author
 
 Arnab Maiti  
-Backend Developer
+Full Stack BlockChain Developer | Building in Public 🚀
