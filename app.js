@@ -10,6 +10,7 @@ const authRoutes = require("./routes/authRoutes");
 const productRoutes = require("./routes/productRoutes");
 const otpRoutes = require("./routes/otp.routes");
 const trustRoutes = require("./routes/trust.routes");
+const blockchainRoutes = require("./routes/blockchain.routes");
 const {testConnection} = require("./services/blockchain.service");
 const app = express();
 const port = process.env.PORT || 3000;
@@ -25,6 +26,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/otp", otpRoutes);
 app.use("/users", trustRoutes);
+app.use("/api/blockchain", blockchainRoutes);
 testConnection();
 app.use(errorMiddleware);
 app.listen(port, () => {

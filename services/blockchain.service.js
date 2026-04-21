@@ -45,8 +45,8 @@ const testConnection = async () => {
   }
 };
 
-const createDeliveryHash = (productId, courierId, status, timestamp) => {
-  const data = `${productId}-${courierId}-${status}-${timestamp}`;
+const createDeliveryHash = (productId, courierId, status,  deliveredAt) => {
+  const data = `${productId}-${courierId}-${status}-${deliveredAt}`;
   return ethers.keccak256(ethers.toUtf8Bytes(data));
 };
 
@@ -63,4 +63,5 @@ module.exports = {
   testConnection,
   createDeliveryHash,
   storeOnchain,
+  getContract
 };

@@ -1,7 +1,5 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
-const { anyValue } = require("@nomicfoundation/hardhat-chai-matchers/withArgs");
-
 describe("TrustChain", function () {
   async function deployTrustChainFixture() {
     const TrustChain = await ethers.getContractFactory("TrustChain");
@@ -15,9 +13,15 @@ describe("TrustChain", function () {
     const { trustChain } = await deployTrustChainFixture();
     const hash = ethers.keccak256(ethers.toUtf8Bytes("shipment-001"));
 
-    await expect(trustChain.storeHash(hash))
-      .to.emit(trustChain, "DeliveryHashStored")
-      .withArgs(hash, anyValue, anyValue);
+    const tx = await trustChain.storeHash(hash);
+    const receipt = await tx.wait();
+    const deliveryStoredLog = receipt.logs.find(
+      (log) => log.fragment && log.fragment.name === "DeliveryStored",
+    );
+
+    expect(deliveryStoredLog).to.exist;
+    expect(deliveryStoredLog.args.deliveryHash).to.equal(hash);
+    expect(deliveryStoredLog.args.sender).to.equal(await trustChain.runner.getAddress());
 
     expect(await trustChain.verifyHash(hash)).to.equal(true);
     expect(await trustChain.storedHashes(hash)).to.equal(true);
@@ -29,8 +33,13 @@ describe("TrustChain", function () {
 
     await trustChain.storeHash(hash);
 
-    await expect(trustChain.storeHash(hash)).to.be.revertedWith(
-      "Hash already stored",
-    );
+    let errorMessage = "";
+    try {
+      await trustChain.storeHash(hash);
+    } catch (error) {
+      errorMessage = error.message;
+    }
+
+    expect(errorMessage).to.include("Hash already stored");
   });
 });

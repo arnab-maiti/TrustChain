@@ -85,7 +85,6 @@ const verifyOTP = async (productId, otp) => {
       [productId],
     );
     const otpRecord = result.rows[0];
-
     if (!otpRecord) {
       throw new AppError("OTP not found for this product", 404);
     }
@@ -110,9 +109,14 @@ const verifyOTP = async (productId, otp) => {
       "UPDATE delivery_otps SET verified = true WHERE id = $1",
       [otpRecord.id],
     );
-    await client.query("UPDATE products SET status = 'delivered' WHERE id = $1", [
-      productId,
-    ]);
+
+    const deliveredAt = Date.now();
+    await client.query(
+  `UPDATE products
+   SET status = 'delivered', delivered_at = $1
+   WHERE id = $2`,
+  [deliveredAt, productId] 
+);
 
     if (product.courier_id) {
       const trustUpdateResult = await client.query(
@@ -143,7 +147,7 @@ const verifyOTP = async (productId, otp) => {
         productId,
         product.courier_id || "no-courier",
         "delivered",
-        Date.now(),
+        deliveredAt,
       ),
     };
 
