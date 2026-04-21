@@ -1,55 +1,71 @@
 # 🚀 TrustChain
 
-A trust-aware supply chain backend where decisions are driven by verified user actions, not assumptions.
+A trust-aware, verifiable supply chain system combining backend intelligence, behavior-based trust scoring, and blockchain-based proof for tamper detection.
 
 ---
 
 ## 💡 Overview
 
-TrustChain addresses trust issues in logistics by assigning a **dynamic trust score** to participants based on system-verified events.
+TrustChain solves trust issues in logistics by ensuring all decisions are based on **verified system actions**.
 
-Participants:
-Manufacturer → Distributor → Courier → Retailer → Customer
-
----
-
-## 🧠 Core Principles
-
-- Event-driven architecture  
-- Behavior-based trust scoring  
-- Role-based access control (RBAC)  
-- OTP-based delivery verification  
-- Auditability and consistency  
-- Backend-first, blockchain-ready design  
+It integrates:
+- Backend system (data + logic)
+- Trust engine (decision-making)
+- Blockchain layer (proof)
+- Verification system (tamper detection)
 
 ---
 
-## ⚙️ Architecture
+## 🧠 Core Philosophy
 
-Controller → Service → Database  
+> Don’t trust users. Trust their actions.
 
-- Controllers: handle HTTP requests  
-- Services: business logic  
-- Database: PostgreSQL  
+- No manual ratings  
+- No fake reviews  
+- All actions are verifiable  
+- Trust is computed from behavior  
 
 ---
 
-## 🗄️ Database Schema
+## 🏗 System Architecture
+User Action
+↓
+Backend (Event Created)
+↓
+Hash Generated
+↓
+Stored on Blockchain
+↓
+Verification API compares both
+
+
+
+### Layers
+
+- Controller → API handling  
+- Service → business logic  
+- Database → PostgreSQL (source of truth)  
+- Blockchain → proof layer  
+- Verification → integrity check  
+
+---
+
+## 🗄️ Database Design
 
 ### Tables
 
-- users → system actors  
-- products → tracked items  
-- product_events → event history (source of truth)  
-- trust_logs → trust score changes  
-- delivery_otps → OTP verification  
+- users  
+- products  
+- product_events  
+- trust_logs  
+- delivery_otps  
 
 ### Features
 
-- UUID IDs using pgcrypto  
-- Trigger-based updated_at  
-- Constraints for integrity  
-- Indexing for performance  
+- UUID IDs  
+- Triggers (`updated_at`)  
+- Constraints for safety  
+- Indexing  
 - Event sequencing  
 
 ---
@@ -57,162 +73,159 @@ Controller → Service → Database
 ## 🔐 Authentication & Authorization
 
 - JWT authentication  
-- Role-Based Access Control (RBAC)  
-- Protected routes via middleware  
+- RBAC  
+- Protected routes  
 
 ---
 
 ## 📦 Product Lifecycle
+created → accepted → out_for_delivery → delivered
 
-created → accepted → out_for_delivery → delivered  
 
-### Role Flow
-
-- Manufacturer → create product  
-- Distributor → accept shipment  
-- Courier → deliver  
 
 ---
 
-## 🔐 OTP Verification System
+## 🔐 OTP Verification
 
-- One active OTP per product  
-- Expiry: 2 minutes  
-- Attempt limit tracking  
-- Prevent OTP reuse  
-- Required for delivery completion  
+- One OTP per product  
+- Expiry + attempt limit  
+- Required for delivery  
 
 ---
 
 ## 🧠 Trust Engine
 
-Trust is calculated from verified events.
-
 ### Formula
-
 trust_score = SUM(change_value)
 
-### Current Rule
 
-- Successful delivery → +10  
 
----
+### Rule
 
-## 🔗 Event → Trust → Decision
-
-- OTP verified → delivery success → trust +10  
-- Low trust courier → blocked  
-- High trust courier → allowed  
-
-👉 System behavior depends on trust.
+- Delivery success → +10  
 
 ---
 
-## ⚙️ API
+## 🔗 Decision System
 
-### Get Trust Score
-
-GET /users/:id/trust-score  
-
-- Returns calculated trust score  
-- Returns 0 if no logs exist  
+- Low trust → blocked  
+- High trust → allowed  
 
 ---
 
-### 📡 On-Chain Storage
+## ⛓ Blockchain Layer
 
-- Smart contract: `storeHash(bytes32 hash)`  
-- Stores delivery proof  
-- Generates transaction hash  
+### Hash Generation
+product_id + courier_id + status + timestamp
 
-👉 Ensures immutability and tamper detection  
+
+
+### Smart Contract
+
+- storeHash(bytes32)
+- verifyHash(bytes32)
+
+### Events
+
+- DeliveryStored(...)
 
 ---
 
-## 📡 Smart Contract Events
+## 🔍 Verification API (CORE)
+GET /api/blockchain/verify/:productId
 
-- `event DeliveryStored(...)`  
-- Indexed for efficient querying  
-- Acts as public verification log  
+
+
+### Flow
+
+- Fetch DB data  
+- Recreate hash  
+- Compare with blockchain  
+
+### Result
+
+- `verified: true` → valid  
+- `verified: false` → tampered  
 
 ---
 
-## 🔗 Data Strategy
+## 💥 Tamper Detection
 
-- **PostgreSQL** → full system data  
-- **Blockchain** → proof (hash)  
+- DB change → hash mismatch  
+- System detects manipulation  
 
-👉 Efficient, scalable, and secure  
+👉 Ensures real data integrity  
+
+---
+
+## 🧠 System Behavior
+
+- DB = actual data  
+- Blockchain = proof  
+- Verification = trust enforcement  
 
 ---
 
 ## 🚀 Features
 
-- User role system  
-- Product lifecycle tracking  
-- Shipment flow management  
-- OTP-based delivery verification  
+- Lifecycle tracking  
+- OTP verification  
+- Trust engine  
 - Event-driven architecture  
-- Trust score engine  
-- Trust-based access control  
-- Blockchain-based verification  
-- Authentication + RBAC  
-- Clean architecture (Controller → Service → DB)  
-- Production-level error handling  
-- Data consistency enforcement  
+- Blockchain integration  
+- Verification API  
+- Tamper detection  
+- RBAC  
+- Clean architecture  
 
 ---
 
 ## 🛠 Tech Stack
 
-- Backend: Node.js, Express.js  
-- Database: PostgreSQL  
-- Blockchain: Solidity, Ethers.js  
-- Authentication: JWT  
-- Tools: GitHub  
+- Node.js, Express  
+- PostgreSQL  
+- Solidity  
+- Ethers.js  
+- JWT  
 
 ---
 
-## 📊 Development Timeline
+## 📊 Progress
 
-- Day 1–4 → Database + event system + optimization  
-- Day 5–6 → Backend + auth + RBAC  
-- Day 7–8 → Product flow + OTP verification  
-- Day 9–10 → Trust engine + decision system  
-- Day 11 → Consistency + lifecycle alignment  
-- Day 12 → Blockchain integration + on-chain verification  
+- Day 1–10 → backend + trust  
+- Day 11 → consistency  
+- Day 12 → blockchain  
+- Day 13 → verification  
 
 ---
 
 ## 🧠 Key Learnings
 
-- Backend = logic + rules + flow  
-- Event systems must be reliable  
-- Trust should be behavior-based  
-- Blockchain is best for verification  
-- Consistency > features  
-- Debugging is core engineering  
+- Systems need verification, not just storage  
+- Blockchain is for proof  
+- Consistency is critical  
+- Trust must be measurable  
+- Security must be testable  
 
 ---
 
-## 🔄 Future Improvements
+## 🔄 Future Scope
 
-- Multi-factor trust scoring (delay, disputes, fraud)  
-- Blockchain-based trust score verification  
-- Payment system based on trust  
-- Real-time dashboard  
-- Redis caching & queues  
-- Microservices architecture  
+- Multi-factor trust  
+- Fraud detection  
+- Payment system  
+- Scaling (Redis, queues)  
+- UI dashboard  
 
 ---
 
 ## 🌍 Vision
 
-To build a scalable, transparent, and trust-driven logistics system where every action is verifiable and every decision is data-driven.
+To build a fully verifiable, trust-driven logistics system with real-world applicability.
 
 ---
 
 ## 👨‍💻 Author
 
-Arnab Maiti  
-Full Stack BlockChain Developer | Building in Public 🚀
+Arnab Maiti
+Full Stack BlockChain Developer
