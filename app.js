@@ -3,7 +3,7 @@ try {
 } catch (error) {
   // The environment may already be injected by the runtime.
 }
-
+const cors = require("cors");
 const express = require('express');
 const errorMiddleware = require("./src/middleware/errorMiddleware");
 const authRoutes = require("./routes/authRoutes");
@@ -14,6 +14,7 @@ const blockchainRoutes = require("./routes/blockchain.routes");
 const {testConnection} = require("./services/blockchain.service");
 const app = express();
 const port = process.env.PORT || 3000;
+app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {
