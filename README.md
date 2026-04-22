@@ -195,7 +195,8 @@ GET /api/blockchain/verify/:productId
 - Day 1–10 → backend + trust  
 - Day 11 → consistency  
 - Day 12 → blockchain  
-- Day 13 → verification  
+- Day 13 → verification 
+- Day 14 -> verify page 
 
 ---
 
