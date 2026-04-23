@@ -196,8 +196,8 @@ GET /api/blockchain/verify/:productId
 - Day 11 → consistency  
 - Day 12 → blockchain  
 - Day 13 → verification 
-- Day 14 -> verify page 
-
+- Day 14 → verify page 
+- Day 15 → Dashboard page
 ---
 
 ## 🧠 Key Learnings
