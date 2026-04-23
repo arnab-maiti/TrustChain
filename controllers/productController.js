@@ -116,9 +116,16 @@ const markOutOfDelivery = asyncHandler(async (req, res, next) => {
     data: updatedProduct.rows[0]
   });
 });
-
+const getAllProducts = asyncHandler(async (req, res) => {
+  const result = await pool.query("SELECT * FROM products ORDER BY created_at DESC");
+  res.status(200).json({
+    success: true,
+    data: result.rows,
+  });
+});
 module.exports = {
   createProduct,
   acceptShipment,
-  markOutOfDelivery
+  markOutOfDelivery,
+  getAllProducts
 };
