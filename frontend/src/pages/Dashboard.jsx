@@ -1,4 +1,4 @@
-import React, { use } from 'react'
+import React from 'react'
 import api from "../services/api";
 import ProductCard from "../components/ProductCard";
 import { useEffect,useState } from "react";
@@ -12,6 +12,7 @@ const Dashboard = () => {
             try{
                 const res = await api.get("/products");
                 setProducts(res.data.data);
+                console.log(products);
             } catch (err) {
                 setError(err.message);
             } finally {

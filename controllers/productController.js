@@ -123,9 +123,41 @@ const getAllProducts = asyncHandler(async (req, res) => {
     data: result.rows,
   });
 });
+const normalizeEvent = (type) => {
+  const map = {
+    PRODUCT_CREATED: "created",
+    PRODUCT_ACCEPTED: "accepted",
+    OUT_FOR_DELIVERY: "out_for_delivery",
+    OTP_GENERATED: "otp_generated",
+    OTP_VERIFIED: "otp_verified",
+    DELIVERY_COMPLETED: "delivered"
+  };
+
+  return map[type] || type;
+};
+
+const getProductEvents = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  const result = await pool.query(
+    "SELECT * FROM product_events WHERE product_id = $1 ORDER BY created_at ASC",
+    [id]
+  );
+
+  const normalized = result.rows.map(e => ({
+    ...e,
+    event_type: normalizeEvent(e.event_type)
+  }));
+
+  res.status(200).json({
+    success: true,
+    data: normalized
+  });
+});
 module.exports = {
   createProduct,
   acceptShipment,
   markOutOfDelivery,
-  getAllProducts
+  getAllProducts,
+  getProductEvents
 };

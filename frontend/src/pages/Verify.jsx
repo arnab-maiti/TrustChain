@@ -16,7 +16,7 @@ const Verify = () => {
     const res = await api.get(`/blockchain/verify/${productId}`);
     
     setResult(res.data.verified);
-  } catch (err) {
+  } catch {
     setError("Something went wrong");
   } finally {
     setLoading(false);

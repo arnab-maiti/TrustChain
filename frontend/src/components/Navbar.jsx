@@ -7,9 +7,10 @@ const Navbar = () => {
         Dashboard
       </Link>
 
-      <Link to="/verify">
+      <Link to="/verify" style={{ marginRight: "10px" }}>
         Verify
       </Link>
+      
     </div>
   );
 };
