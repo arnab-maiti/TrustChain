@@ -9,6 +9,7 @@ const getStatusColor = (status) => {
 };
 
 const ProductCard = ({ product }) => {
+  console.log("Rendering ProductCard for:", product);
   return (
     
     <Link

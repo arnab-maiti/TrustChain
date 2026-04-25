@@ -173,7 +173,6 @@ const verifyOTP = async (productId, otp) => {
     ? `delivery confirmed (tx: ${txHash})`
     : "delivery confirmed";
 };
-
 module.exports = {
   generateOTP,
   verifyOTP,

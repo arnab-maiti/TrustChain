@@ -10,9 +10,9 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try{
-                const res = await api.get("/products");
+                const res = await api.get(`/products`);
                 setProducts(res.data.data);
-                console.log(products);
+                
             } catch (err) {
                 setError(err.message);
             } finally {
@@ -22,6 +22,7 @@ const Dashboard = () => {
 
         fetchProducts();
     }, []);
+    console.log(products);
   return (
     <div style={{ maxWidth: "600px", margin: "auto", padding: "20px" }}>
         <h2>DashBoard</h2>

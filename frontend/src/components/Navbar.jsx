@@ -11,6 +11,7 @@ const Navbar = () => {
         Verify
       </Link>
       
+      <Link to="/check-trust" style={{ marginRight: "10px" }}>Check Trust</Link>
     </div>
   );
 };

@@ -274,4 +274,4 @@ SELECT * FROM products;
 ALTER TABLE product_events
 DROP CONSTRAINT chk_transfer_requires_recipient;
 ALTER TABLE products ADD COLUMN delivered_at BIGINT;
-update products SET status = 'accepted' where id = '2a7d0a52-dc00-429f-8a86-c13f48fed55c';
+update products SET status = 'accepted' where id = 'cf16dd39-58d8-4aa4-bba6-3343b0058228';
