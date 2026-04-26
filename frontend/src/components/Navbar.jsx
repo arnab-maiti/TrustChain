@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 const Navbar = () => {
   return (
     <div style={{ padding: "10px", background: "#eee" }}>
+      <Link to="/login" style={{ marginRight: "10px" }}>Login</Link>
       <Link to="/" style={{ marginRight: "10px" }}>
         Dashboard
       </Link>
