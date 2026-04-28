@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, CheckCircle, Clock, Truck, Lock, Package } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Clock, Truck, Lock, Package, AlertCircle } from 'lucide-react';
 import api from '../services/api';
-import { SkeletonTimeline } from '../components/Skeleton';
-import EmptyState from '../components/EmptyState';
 import { useToast } from '../context/ToastContext';
 
 const Timeline = () => {
-  const { id } = useParams();
+  const { productId } = useParams();
   const navigate = useNavigate();
-  const [events, setEvents] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
   const { error: showError } = useToast();
 
+  const [events, setEvents] = useState([]);
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  // Icon mapping for event types
   const eventIcons = {
     created: Package,
     accepted: CheckCircle,
@@ -24,6 +25,7 @@ const Timeline = () => {
     delivered: CheckCircle,
   };
 
+  // Color mapping for event types
   const eventColors = {
     created: 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300',
     accepted: 'bg-amber-100 dark:bg-amber-900 text-amber-600 dark:text-amber-300',
@@ -35,18 +37,24 @@ const Timeline = () => {
   };
 
   useEffect(() => {
-    if (!id) {
+    if (!productId) {
       setError('No product ID provided');
       setLoading(false);
       return;
     }
 
-    const fetchEvents = async () => {
+    const fetchTimeline = async () => {
       try {
         setLoading(true);
         setError('');
-        const res = await api.get(`/products/${id}/events`);
+        
+        // Fetch events for this product
+        const res = await api.get(`/products/${productId}/events`);
         setEvents(res.data.data || []);
+
+        // Fetch product details
+        const productRes = await api.get(`/products/${productId}`);
+        setProduct(productRes.data.data);
       } catch (err) {
         const message = err.response?.data?.message || 'Failed to load timeline';
         setError(message);
@@ -56,8 +64,8 @@ const Timeline = () => {
       }
     };
 
-    fetchEvents();
-  }, [id, showError]);
+    fetchTimeline();
+  }, [productId, showError]);
 
   const formatEventType = (type) => {
     return type
@@ -66,10 +74,24 @@ const Timeline = () => {
       .replace(/\b\w/g, (c) => c.toUpperCase());
   };
 
-  if (!id) {
+  const formatDate = (date) => {
+    return new Date(date).toLocaleString();
+  };
+
+  if (!productId) {
     return (
       <div className="container-main">
-        <EmptyState title="No product selected" description="Please select a product to view its timeline" />
+        <div className="card p-12 text-center">
+          <h3 className="text-xl font-semibold text-light-text dark:text-dark-text mb-2">
+            No product selected
+          </h3>
+          <p className="text-gray-600 dark:text-gray-400 mb-4">
+            Please select a product to view its timeline
+          </p>
+          <button onClick={() => navigate('/')} className="btn-primary">
+            Back to Dashboard
+          </button>
+        </div>
       </div>
     );
   }
@@ -89,84 +111,98 @@ const Timeline = () => {
         <h1 className="text-3xl font-bold text-light-text dark:text-dark-text mb-2">
           Product Timeline
         </h1>
-        <p className="text-gray-600 dark:text-gray-400">
-          Product ID: <code className="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded text-sm">{id?.substring(0, 12)}...</code>
-        </p>
+        {product && (
+          <div className="flex gap-6 text-sm">
+            <div>
+              <p className="text-gray-500 dark:text-gray-400">Product Name</p>
+              <p className="font-medium text-light-text dark:text-dark-text">{product.name}</p>
+            </div>
+            <div>
+              <p className="text-gray-500 dark:text-gray-400">Product ID</p>
+              <code className="font-mono text-xs bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">
+                {productId?.substring(0, 12)}...
+              </code>
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Loading State */}
+      {/* Timeline Content */}
       {loading ? (
-        <div className="card p-8">
-          <SkeletonTimeline />
+        <div className="card p-12 text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-light-accent dark:border-dark-accent"></div>
+          <p className="mt-4 text-light-text dark:text-dark-text">Loading timeline...</p>
         </div>
       ) : error ? (
         <div className="card p-8 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
-          <h3 className="text-lg font-semibold text-red-800 dark:text-red-200 mb-2">
-            Error Loading Timeline
-          </h3>
-          <p className="text-red-700 dark:text-red-300">{error}</p>
+          <div className="flex items-start gap-3">
+            <AlertCircle className="text-red-600 dark:text-red-400 flex-shrink-0 mt-1" size={20} />
+            <div>
+              <h3 className="text-lg font-semibold text-red-800 dark:text-red-200 mb-2">
+                Error Loading Timeline
+              </h3>
+              <p className="text-red-700 dark:text-red-300">{error}</p>
+            </div>
+          </div>
         </div>
       ) : events.length === 0 ? (
-        <EmptyState
-          title="No events yet"
-          description="Timeline events will appear here as the product progresses"
-          icon={Clock}
-        />
+        <div className="card p-12 text-center">
+          <Clock size={48} className="mx-auto mb-4 text-gray-400" />
+          <h3 className="text-xl font-semibold text-light-text dark:text-dark-text mb-2">
+            No events yet
+          </h3>
+          <p className="text-gray-600 dark:text-gray-400">
+            Events will appear here as the product progresses through the supply chain
+          </p>
+        </div>
       ) : (
         <div className="card p-8">
-          <div className="relative">
-            {/* Vertical line */}
-            <div className="absolute left-6 top-0 bottom-0 w-1 bg-gradient-to-b from-light-accent dark:from-dark-accent via-gray-300 dark:via-gray-600 to-transparent" />
+          {/* Timeline */}
+          <div className="space-y-6">
+            {events.map((event, index) => {
+              const eventType = event.event_type?.toLowerCase() || 'created';
+              const IconComponent = eventIcons[eventType] || Package;
+              const colorClass = eventColors[eventType] || eventColors['created'];
 
-            {/* Events */}
-            <div className="space-y-8">
-              {events.map((event, index) => {
-                const EventIcon = eventIcons[event.event_type] || Package;
-                const colorClass = eventColors[event.event_type] || eventColors.created;
-                const isLast = index === events.length - 1;
-
-                return (
-                  <div key={event.id} className="relative pl-20 animate-fadeIn" style={{ animationDelay: `${index * 100}ms` }}>
-                    {/* Icon */}
-                    <div className={`absolute left-0 w-14 h-14 rounded-full flex items-center justify-center ${colorClass} shadow-md`}>
-                      <EventIcon size={24} />
+              return (
+                <div key={event.id || index} className="flex gap-4">
+                  {/* Timeline dot and line */}
+                  <div className="flex flex-col items-center">
+                    <div className={`w-12 h-12 rounded-full ${colorClass} flex items-center justify-center flex-shrink-0`}>
+                      <IconComponent size={20} />
                     </div>
-
-                    {/* Content */}
-                    <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <h3 className="font-semibold text-light-text dark:text-dark-text text-lg mb-1">
-                            {formatEventType(event.event_type)}
-                          </h3>
-                          <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                            {new Date(event.created_at).toLocaleString()}
-                          </p>
-                          {event.actor && (
-                            <p className="text-sm text-gray-700 dark:text-gray-300">
-                              <span className="font-medium">By:</span> {event.actor}
-                            </p>
-                          )}
-                        </div>
-                        {isLast && (
-                          <span className="ml-2 px-3 py-1 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 text-xs font-semibold rounded-full">
-                            Latest
-                          </span>
-                        )}
-                      </div>
-
-                      {event.notes && (
-                        <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
-                          <p className="text-sm text-gray-700 dark:text-gray-300 italic">
-                            "{event.notes}"
-                          </p>
-                        </div>
-                      )}
-                    </div>
+                    {index < events.length - 1 && (
+                      <div className="w-1 h-12 bg-gray-200 dark:bg-gray-700 mt-2"></div>
+                    )}
                   </div>
-                );
-              })}
-            </div>
+
+                  {/* Event details */}
+                  <div className="flex-1 pt-2">
+                    <h4 className="text-lg font-semibold text-light-text dark:text-dark-text">
+                      {formatEventType(eventType)}
+                    </h4>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                      {formatDate(event.timestamp || event.created_at)}
+                    </p>
+                    {event.actor && (
+                      <p className="text-sm text-gray-500 dark:text-gray-500 mt-1">
+                        <span className="font-medium">By:</span> {event.actor}
+                      </p>
+                    )}
+                    {event.notes && (
+                      <p className="text-sm text-gray-700 dark:text-gray-300 mt-2">
+                        {event.notes}
+                      </p>
+                    )}
+                    {event.location && (
+                      <p className="text-sm text-gray-500 dark:text-gray-500 mt-2">
+                        <span className="font-medium">Location:</span> {event.location}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       )}

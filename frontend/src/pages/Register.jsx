@@ -5,42 +5,56 @@ import api from '../services/api';
 import { useToast } from '../context/ToastContext';
 import { useUser } from '../context/UserContext';
 
-const Login = () => {
+const Register = () => {
   const navigate = useNavigate();
   const { success, error: showError } = useToast();
   const { login } = useUser();
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    role: 'retailer',
+  });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async (e) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!email.trim() || !password.trim()) {
+    if (!formData.name.trim() || !formData.email.trim() || !formData.password.trim()) {
       showError('Please fill in all fields');
       return;
     }
 
-    if (!email.includes('@')) {
-      showError('Please enter a valid email');
+    if (formData.password.length < 6) {
+      showError('Password must be at least 6 characters');
       return;
     }
 
     try {
       setLoading(true);
-      const response = await api.post('/auth/login', { email, password });
+      const response = await api.post('/auth/register', {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        role: formData.role,
+      });
 
       if (response.data?.data?.token) {
-        login(response.data.data.token, response.data.data.user || {});
-        success('Login successful! Redirecting...');
+        login(response.data.data.token, response.data.data.user);
+        success('Registration successful! Redirecting to dashboard...');
         setTimeout(() => navigate('/'), 1500);
       } else {
-        showError('Login failed: No token received');
+        showError('Registration failed: No token received');
       }
     } catch (error) {
-      const message = error.response?.data?.message || 'Login failed. Please try again.';
+      const message = error.response?.data?.message || 'Registration failed. Please try again.';
       showError(message);
     } finally {
       setLoading(false);
@@ -62,15 +76,31 @@ const Login = () => {
               </div>
             </div>
             <h1 className="text-3xl font-bold text-light-text dark:text-dark-text mb-2">
-              TrustChain
+              Create Account
             </h1>
             <p className="text-gray-600 dark:text-gray-400">
-              Sign in to your account
+              Join TrustChain today
             </p>
           </div>
 
           {/* Form */}
-          <form onSubmit={handleLogin} className="space-y-4 mb-6">
+          <form onSubmit={handleSubmit} className="space-y-4 mb-6">
+            {/* Name */}
+            <div>
+              <label className="block text-sm font-medium text-light-text dark:text-dark-text mb-2">
+                Full Name
+              </label>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="John Doe"
+                className="input-field"
+                disabled={loading}
+              />
+            </div>
+
             {/* Email */}
             <div>
               <label className="block text-sm font-medium text-light-text dark:text-dark-text mb-2">
@@ -78,13 +108,31 @@ const Login = () => {
               </label>
               <input
                 type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
                 placeholder="name@example.com"
                 className="input-field"
                 disabled={loading}
-                autoComplete="email"
               />
+            </div>
+
+            {/* Role */}
+            <div>
+              <label className="block text-sm font-medium text-light-text dark:text-dark-text mb-2">
+                Role
+              </label>
+              <select
+                name="role"
+                value={formData.role}
+                onChange={handleChange}
+                className="input-field"
+                disabled={loading}
+              >
+                <option value="manufacturer">Manufacturer</option>
+                <option value="distributor">Distributor</option>
+                <option value="retailer">Retailer</option>
+              </select>
             </div>
 
             {/* Password */}
@@ -95,12 +143,12 @@ const Login = () => {
               <div className="relative">
                 <input
                   type={showPassword ? 'text' : 'password'}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
                   placeholder="••••••••"
                   className="input-field pr-10"
                   disabled={loading}
-                  autoComplete="current-password"
                 />
                 <button
                   type="button"
@@ -110,6 +158,9 @@ const Login = () => {
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                At least 6 characters
+              </p>
             </div>
 
             {/* Submit Button */}
@@ -121,20 +172,20 @@ const Login = () => {
               {loading ? (
                 <>
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  Signing in...
+                  Creating Account...
                 </>
               ) : (
-                'Sign In'
+                'Create Account'
               )}
             </button>
           </form>
 
-          {/* Link to Register */}
+          {/* Link to Login */}
           <div className="text-center">
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              Don't have an account?{' '}
-              <Link to="/register" className="text-light-accent dark:text-dark-accent font-medium hover:underline">
-                Create one
+              Already have an account?{' '}
+              <Link to="/login" className="text-light-accent dark:text-dark-accent font-medium hover:underline">
+                Sign in
               </Link>
             </p>
           </div>
@@ -144,4 +195,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;

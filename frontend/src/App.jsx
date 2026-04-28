@@ -1,68 +1,77 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { ThemeProvider } from './context/ThemeContext';
+import { UserProvider, useUser } from './context/UserContext';
 import { ToastProvider } from './context/ToastContext';
 
 // Pages
-import Dashboard from './pages/Dashboard';
-import Verify from './pages/Verify';
-import Timeline from './pages/Timeline';
-import CheckTrust from './pages/CheckTrust';
 import Login from './pages/Login';
+import Register from './pages/Register';
+import Dashboard from './pages/Dashboard';
+import Timeline from './pages/Timeline';
+import Verify from './pages/Verify';
 import Navbar from './components/Navbar';
 
+// Protected Route Component
 const ProtectedRoute = ({ children }) => {
-  const token = localStorage.getItem('token');
+  const { token, loading } = useUser();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-light-bg dark:bg-dark-bg flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-light-accent dark:border-dark-accent"></div>
+          <p className="mt-4 text-light-text dark:text-dark-text">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
   return token ? children : <Navigate to="/login" replace />;
 };
 
-function App() {
-  const token = localStorage.getItem('token');
+// Main App Layout with Routes
+const AppRoutes = () => {
+  const { token } = useUser();
 
   return (
-    <ThemeProvider>
-      <ToastProvider>
+    <div className="min-h-screen bg-light-bg dark:bg-dark-bg">
+      {token && <Navbar />}
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/timeline/:productId"
+          element={
+            <ProtectedRoute>
+              <Timeline />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/verify/:productId" element={<Verify />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </div>
+  );
+};
+
+// Root App Component
+function App() {
+  return (
+    <ToastProvider>
+      <UserProvider>
         <BrowserRouter>
-          {token && <Navbar />}
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route
-              path="/"
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/verify"
-              element={
-                <ProtectedRoute>
-                  <Verify />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/timeline/:id"
-              element={
-                <ProtectedRoute>
-                  <Timeline />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/check-trust"
-              element={
-                <ProtectedRoute>
-                  <CheckTrust />
-                </ProtectedRoute>
-              }
-            />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
+          <AppRoutes />
         </BrowserRouter>
-      </ToastProvider>
-    </ThemeProvider>
+      </UserProvider>
+    </ToastProvider>
   );
 }
 
