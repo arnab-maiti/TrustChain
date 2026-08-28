@@ -1,0 +1,49 @@
+version: "3.9"
+
+services:
+  backend:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      DB_HOST: db
+      DB_USER: postgres
+      DB_NAME: TrustChain
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_PORT: 5432
+      JWT_SECRET: ${JWT_SECRET}
+      EMAIL_USER: ${EMAIL_USER}
+      EMAIL_PASS: ${EMAIL_PASS}
+      ALCHEMY_RPC_URL: ${ALCHEMY_RPC_URL}
+      PRIVATE_KEY: ${PRIVATE_KEY}
+      CONTRACT_ADDRESS: ${CONTRACT_ADDRESS}
+      PORT: 3000
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: TrustChain
+    ports:
+      - "5432:5432"
+    volumes:
+      - trustchain_pgdata:/var/lib/postgresql/data
+      # docker-entrypoint-initdb.d runs these ONCE, alphabetically,
+      # only when the data volume is empty (first-ever startup).
+      # Not a re-runnable migration tool — just seeds a fresh DB.
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/01_schema.sql
+      - ./db/migrations/002_requirements.sql:/docker-entrypoint-initdb.d/02_requirements.sql
+      - ./db/migrations/003_manufacturing.sql:/docker-entrypoint-initdb.d/03_manufacturing.sql
+      - ./db/migrations/004_dispatch_retail.sql:/docker-entrypoint-initdb.d/04_dispatch_retail.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  trustchain_pgdata:

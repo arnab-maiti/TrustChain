@@ -1,0 +1,17 @@
+const express = require('express');
+const router = express.Router();
+const protect = require('../src/middleware/authMiddleware');
+const { createProduct,acceptShipment,markOutOfDelivery,getAllProducts,getProductById,getProductEvents,createProductFromRequirement,completeProduction,dispatchToDistributor,dispatchToRetailer,confirmRetailerReceipt } = require('../controllers/productController');
+const roleMiddleware = require('../src/middleware/roleMiddleware');
+router.post('/',protect, roleMiddleware('manufacturer'), createProduct);
+router.post('/from-requirement/:requirementId', protect, roleMiddleware('manufacturer'), createProductFromRequirement);
+router.patch('/:id/complete-production', protect, roleMiddleware('manufacturer'), completeProduction);
+router.post('/:id/dispatch', protect, roleMiddleware('manufacturer'), dispatchToDistributor);
+router.post('/:id/dispatch-to-retailer', protect, roleMiddleware('distributor'), dispatchToRetailer);
+router.post('/:id/confirm-retailer-receipt', protect, roleMiddleware('retailer'), confirmRetailerReceipt);
+router.get('/', getAllProducts);
+router.get('/:id', getProductById);
+router.post('/:id/accept', protect, roleMiddleware('distributor'), acceptShipment);
+router.post('/:id/out-of-delivery', protect, roleMiddleware('distributor', 'retailer'), markOutOfDelivery);
+router.get('/:id/events', getProductEvents);
+module.exports = router;

@@ -1,0 +1,43 @@
+try {
+  require("dotenv").config();
+} catch (error) {
+  // The environment may already be injected by the runtime.
+}
+const cors = require("cors");
+const express = require('express');
+const errorMiddleware = require("./src/middleware/errorMiddleware");
+const authRoutes = require("./routes/authRoutes");
+const productRoutes = require("./routes/productRoutes");
+const otpRoutes = require("./routes/otp.routes");
+const trustRoutes = require("./routes/trust.routes");
+const blockchainRoutes = require("./routes/blockchain.routes");
+const userRoutes = require("./routes/user.routes");
+const customerRoutes = require("./routes/customerRoutes");
+const requirementRoutes = require("./routes/requirementRoutes");
+const testRoutes= require("./routes/testRoutes");
+const {testConnection} = require("./services/blockchain.service");
+const app = express();
+const port = process.env.PORT || 3000;
+app.use(cors());
+app.use(express.json());
+
+app.get("/", (req, res) => {
+  res.send("Hello World!");
+});
+app.get("/test-error", (req, res,next) => {
+    throw new Error("This is a test error");
+});
+app.use("/api/auth", authRoutes);
+app.use("/", testRoutes);
+app.use("/api/products", productRoutes);
+app.use("/api/otp", otpRoutes);
+app.use("/users", trustRoutes);
+app.use("/api/blockchain", blockchainRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/customers", customerRoutes);
+app.use("/api/requirements", requirementRoutes);
+testConnection();
+app.use(errorMiddleware);
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});

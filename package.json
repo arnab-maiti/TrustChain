@@ -1,0 +1,40 @@
+{
+  "name": "trustchain",
+  "version": "1.0.0",
+  "description": "A dynamic trust score based supply chain system.",
+  "main": "app.js",
+  "scripts": {
+    "test": "hardhat test",
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arnab-maiti/TrustChain.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/arnab-maiti/TrustChain/issues"
+  },
+  "homepage": "https://github.com/arnab-maiti/TrustChain#readme",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.6",
+    "ethers": "^6.16.0",
+    "express": "^5.2.1",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.3",
+    "morgan": "^1.10.1",
+    "nodemailer": "^8.0.10",
+    "pg": "^8.20.0"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^6.1.2",
+    "dotenv": "^16.6.1",
+    "hardhat": "^2.26.3",
+    "nodemon": "^3.1.14"
+  }
+}
