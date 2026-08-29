@@ -178,5 +178,56 @@ Also produced: professional README.md, LinkedIn post summarizing the day's work.
 
 **Still open (not app-code, needs manual action):** `.env` with real secrets remains committed in git history — rotate `PRIVATE_KEY`, `DB_PASSWORD`, `EMAIL_PASS` and scrub history before any public deployment.
 
-## Next Recommended Task (Day 31)
-Stage 3 — Dockerize (backend + Postgres via docker-compose), then rotate leaked secrets before any deployment, then push to ECR/EC2.
+## Day 31 — Completed (AWS Production Deployment Design)
+**What we built:** `AWS_DEPLOYMENT.md` — concrete infrastructure design extending `SYSTEM_DESIGN.md`: VPC/subnet layout (public ALB, private EC2+RDS), security group rules, EC2/ASG sizing with reasoning, RDS config (Multi-AZ deferred, reasoned), Secrets Manager plan, CI/CD pipeline via GitHub Actions + OIDC (no long-lived keys), least-privilege IAM roles, CloudWatch alarm set, and a first-time deployment checklist (secret rotation listed as step 1, before anything else).
+
+**No code changed — pure design document.**
+
+## Day 32 — Completed (Dockerize: backend + PostgreSQL)
+**What we built:** `Dockerfile` (Node 18 alpine, production install), `.dockerignore`, `docker-compose.yml` (backend + Postgres, healthcheck-gated startup, named volume for data persistence, auto-seeds schema + migrations on first run via `docker-entrypoint-initdb.d`).
+
+**Dependency fix required for Docker to work at all:** `config/db.js` had hardcoded `host: "localhost"` — inside a container this resolves to the container itself, not the DB service. Changed to env-driven (`DB_HOST`, `DB_USER`, `DB_NAME`, `DB_PORT`) with the old hardcoded values as defaults — fully backward-compatible with the existing local (non-Docker) setup.
+
+**Files changed:**
+- `Dockerfile` (new)
+- `.dockerignore` (new)
+- `docker-compose.yml` (new)
+- `config/db.js` (env-driven DB connection)
+
+**Tests:** YAML syntax validated; `node --check` passed on `db.js`. **Docker itself isn't available in this sandbox — full build/run test must be done on the user's machine with Docker Desktop.** Test steps provided; awaiting user confirmation.
+
+**Architecture decision:** frontend containerization deferred — today's scope is backend + DB only, since that's what actually needs to reach EC2. Redis/Kafka still not introduced — no justified need yet.
+
+## Next Recommended Task (Day 33)
+Once Docker is confirmed working locally: rotate the leaked secrets (`PRIVATE_KEY`, `DB_PASSWORD`, `EMAIL_PASS` — still pending since Day 1 audit) before pushing any image to a registry or deploying, then move to Stage 3 actual cloud steps (ECR push, EC2 provisioning, RDS setup) per `AWS_DEPLOYMENT.md`.
+
+## Day 33 — Completed (Secret rotation + git history scrub)
+**What we did:** Closed the critical vulnerability flagged since the Day 1 audit — a real, publicly-committed `.env` with live credentials.
+
+1. Added `.env`/`.env.local` to `.gitignore` (was missing entirely — this is why it got committed in the first place)
+2. Rotated all 3 leaked credentials: Postgres password, Gmail app password, blockchain wallet private key (new wallet + fresh Sepolia faucet funds; contract address unchanged since ownership wasn't tied to the leaked key)
+3. Removed `.env` from git tracking (`git rm --cached .env`)
+4. Reset git history entirely (`.git` folder deleted, fresh `git init`) rather than using `git filter-repo`/BFG — reasonable trade-off for a solo learning project where commit history isn't the valuable artifact, the code and the ability to explain it is
+5. Renamed local branch `master` → `main` to match GitHub's current default, force-pushed clean history
+
+**Real debugging moment:** `git push -f origin main` initially failed (`src refspec main does not match any`) — local branch was still `master` from Windows Git's older default. Fixed with `git branch -M main` before pushing.
+
+**Files changed:** `.gitignore` only — this was infrastructure/hygiene work, not application code.
+
+**Status: secrets rotated, `.env` no longer in git history or tracked going forward.**
+
+
+## Day 34 — Completed (AWS Networking: VPC, Subnets, Security Groups)
+**What we did:** Hands-on AWS console setup of the network layer from `AWS_DEPLOYMENT.md`. No app code changes — infrastructure only.
+
+1. First attempt created duplicate subnets (manual step-by-step guide run on top of an already-wizard-generated VPC) — caught and fixed by deleting the VPC entirely (cascade-deletes subnets/route tables/IGW) and recreating cleanly with AWS's "VPC and more" wizard in one pass.
+2. Final setup: `TrustChain` VPC (10.0.0.0/16), 2 public + 2 private subnets across 2 AZs, Internet Gateway, public + private route tables — all auto-wired by the wizard.
+3. NAT Gateway deliberately **not** created (cost-conscious deferral, matches `AWS_DEPLOYMENT.md`) — confirmed zero NAT Gateways exist.
+4. Created 3 security groups implementing a least-privilege trust chain: `sg-alb` (open to internet on 80/443) → `sg-backend` (port 3000, source = `sg-alb` only) → `sg-rds` (port 5432, source = `sg-backend` only). RDS is not reachable from the internet or even directly from the ALB — only from the backend.
+
+**Real debugging moment:** initial VPC setup used the manual step-by-step subnet-creation guide on a VPC that had *already* been created via the "VPC and more" wizard, which auto-generates its own subnets/route tables/IGW — resulting in duplicate, redundant subnets in the same VPC (no IP conflict since CIDR ranges didn't overlap, but messy). Resolved by deleting and redoing cleanly with the wizard only.
+
+**No files changed** — this entry itself is the only diff (tracking infrastructure work that has no corresponding code commit).
+
+## Next Recommended Task (Day 35)
+RDS PostgreSQL instance creation (private subnet, `sg-rds`), then load `schema.sql` + migrations into it.
