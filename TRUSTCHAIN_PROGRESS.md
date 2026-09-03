@@ -231,3 +231,15 @@ Once Docker is confirmed working locally: rotate the leaked secrets (`PRIVATE_KE
 
 ## Next Recommended Task (Day 35)
 RDS PostgreSQL instance creation (private subnet, `sg-rds`), then load `schema.sql` + migrations into it.
+
+## Day 35 — Completed (RDS PostgreSQL Instance)
+**What we did:** Created a private RDS PostgreSQL instance (`trustchain-db`) — Standard create (not Easy create, which would have ignored our custom VPC/security groups), in the `trustchain-db-subnet-group` (private subnets only), attached to `sg-rds`, public access disabled, Multi-AZ disabled (cost-conscious, per `AWS_DEPLOYMENT.md`).
+
+**Endpoint:** `trustchain-db.c9g4wgugun1f.ap-south-1.rds.amazonaws.com` (port 5432) — needed for the backend's `DB_HOST` once EC2 is up.
+
+**Real issue hit + resolved:** First attempt failed with "maximum number of instances available with free plan accounts" — AWS's newer Free Plan account-level cap, not classic Free Tier. Resolved by checking for and clearing a stray/failed instance from an earlier attempt.
+
+**No data loaded yet** — deliberately deferred to Day 36, since RDS has no public access; schema/migrations will be run from inside the VPC (EC2) once it exists, consistent with how it would actually work in production (no temporary public-access window opened).
+
+## Next Recommended Task (Day 36)
+Launch EC2 instance in a public subnet with `sg-backend`, connect to RDS, run `schema.sql` + migrations from there, then get the Dockerized backend running on it.
